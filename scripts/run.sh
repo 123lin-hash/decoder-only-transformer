@@ -1,2 +1,2 @@
 #!/bin/bash
-python src/gpt.py 
+python src/decoder-only.py 
