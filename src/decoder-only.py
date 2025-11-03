@@ -118,7 +118,7 @@ class Block(nn.Module):
         x = x + self.ff(self.ln2(x))
         return x
 
-class GPTLanguageModel(nn.Module):
+class decoderonly(nn.Module):
 
     def __init__(self):
         super().__init__()
@@ -204,7 +204,7 @@ def draw_loss(train_loss, test_loss, fig_name):
 
     return
 
-model = GPTLanguageModel()
+model = decoderonly()
 m = model.to(device)
 
 # 使用Adamw优化器
