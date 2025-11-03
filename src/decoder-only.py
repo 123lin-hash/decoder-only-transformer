@@ -123,7 +123,7 @@ class GPTLanguageModel(nn.Module):
     def __init__(self):
         super().__init__()
         self.token_embedding_table = nn.Embedding(vocab_size, n_embd) 
-        # self.position_embedding_table = nn.Embedding(block_size, n_embd) #自学习位置编码
+        self.position_embedding_table = nn.Embedding(block_size, n_embd) #自学习位置编码
         self.blocks = nn.Sequential(*[Block(n_embd, num_heads=n_head) for _ in range(n_layer)])
         self.ln_f = nn.LayerNorm(n_embd) # 层归一化
         self.lm_head = nn.Linear(n_embd, vocab_size)
@@ -142,7 +142,7 @@ class GPTLanguageModel(nn.Module):
         B, T = idx.shape
         tok_emb = self.token_embedding_table(idx) # (B,T,C)
         # pos_emb = self.position_embedding_table(torch.arange(T, device=device)) # (T,C)
-        x = tok_emb # + pos_emb # (B,T,C)
+        x = tok_emb + pos_emb # (B,T,C)
         x = self.blocks(x) # (B,T,C)
         x = self.ln_f(x) # (B,T,C)
         logits = self.lm_head(x) # (B,T,vocab_size)
@@ -227,8 +227,8 @@ for iter in range(max_iters):
     loss.backward()
     optimizer.step()
 
-fig_name = 'result4.jpg'
+fig_name = 'result.jpg'
 draw_loss(train_losses, test_losses, fig_name)
 
 context = torch.zeros((1, 1), dtype=torch.long, device=device)
-open('output4.txt', 'w').write(decode(m.generate(context, max_new_tokens=10000)[0].tolist()))                                                                                                                    
+open('output.txt', 'w').write(decode(m.generate(context, max_new_tokens=10000)[0].tolist()))                                                                                                                    
